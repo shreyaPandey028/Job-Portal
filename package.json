@@ -1,0 +1,26 @@
+{
+  "name": "jobportal",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/shreyaPandey028/job_portal#readme",
+  "bugs": {
+    "url": "https://github.com/shreyaPandey028/job_portal/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreyaPandey028/job_portal.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -k -n backend,frontend \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
