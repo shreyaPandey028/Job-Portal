@@ -25,6 +25,11 @@ const JobDescription = () => {
 
   const applyJobHandler = async () => {
     try {
+      if (!user?.profile?.resume) {
+        toast.error("Please upload your resume in Profile before applying.");
+        return;
+      }
+
       const res = await axios.get(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
         { withCredentials: true }

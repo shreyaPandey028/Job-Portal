@@ -12,17 +12,33 @@ import applicationRoute from "./routes/application.route.js";
 
 
 const app = express();
+app.set("trust proxy", 1);
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-const corsOptions = {
-    origin:'http://localhost:5173',
-    credentials:true
-}
 
-app.use(cors(corsOptions));
+// CORS configuration
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 const PORT = process.env.PORT || 3000;
 

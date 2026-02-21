@@ -4,13 +4,19 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { MoreHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
-import { APPLICATION_API_END_POINT } from '@/utils/constant';
+import { APPLICATION_API_END_POINT, USER_API_END_POINT } from '@/utils/constant';
 import axios from 'axios';
 
 const shortlistingStatus = ["Accepted", "Rejected"];
 
 const ApplicantsTable = () => {
     const { applicants } = useSelector(store => store.application);
+
+    // Generate server-side resume URL using public_id
+    const getServerResumeUrl = (publicId) => {
+        if (!publicId) return null;
+        return `${USER_API_END_POINT}/resume/${publicId}`;
+    };
 
     const statusHandler = async (status, id) => {
         console.log('called');
@@ -49,7 +55,7 @@ const ApplicantsTable = () => {
                                 <TableCell>{item?.applicant?.phoneNumber}</TableCell>
                                 <TableCell >
                                     {
-                                        item.applicant?.profile?.resume ? <a className="text-blue-600 cursor-pointer" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer">{item?.applicant?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                                        item?.resumePublicId ? <a className="text-blue-600 cursor-pointer" href={getServerResumeUrl(item?.resumePublicId)} target="_blank" rel="noopener noreferrer">{item?.resumeOriginalName || "View Resume"}</a> : <span>NA</span>
                                     }
                                 </TableCell>
                                 <TableCell>{item?.applicant.createdAt.split("T")[0]}</TableCell>

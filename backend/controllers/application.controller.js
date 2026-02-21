@@ -1,5 +1,6 @@
 import { Application } from "../models/application.model.js";
 import { Job } from "../models/job.model.js";
+import { User } from "../models/user.model.js";
 
 export const applyJob = async (req, res) => {
     try {
@@ -29,10 +30,29 @@ export const applyJob = async (req, res) => {
                 success: false
             })
         }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        if (!user?.profile?.resume) {
+            return res.status(400).json({
+                message: "Please upload your resume in Profile before applying.",
+                success: false
+            });
+        }
+
         // create a new application
         const newApplication = await Application.create({
             job:jobId,
             applicant:userId,
+            resumeUrl: user.profile.resume,
+            resumePublicId: user.profile.resumePublicId,
+            resumeOriginalName: user.profile.resumeOriginalName || "resume.pdf"
         });
 
         job.applications.push(newApplication._id);
@@ -43,6 +63,10 @@ export const applyJob = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Error applying for job",
+            success: false
+        })
     }
 };
 export const getAppliedJobs = async (req,res) => {
@@ -68,6 +92,10 @@ export const getAppliedJobs = async (req,res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Error fetching applied jobs",
+            success: false
+        })
     }
 }
 // admin dekhega kitna user ne apply kiya hai
@@ -89,10 +117,14 @@ export const getApplicants = async (req,res) => {
         };
         return res.status(200).json({
             job, 
-            succees:true
+            success:true
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message:"Error fetching applicants",
+            success:false
+        })
     }
 }
 export const updateStatus = async (req,res) => {
@@ -126,5 +158,9 @@ export const updateStatus = async (req,res) => {
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Error updating status",
+            success: false
+        })
     }
 }
