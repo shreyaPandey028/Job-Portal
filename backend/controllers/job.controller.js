@@ -13,13 +13,19 @@ export const postJob = async (req, res) => {
             })
         }
 
-        const salaryNumber = Number(salary);
-        const experienceNumber = Number(experience);
         const positionNumber = Number(position);
+        const rangePattern = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
 
-        if (Number.isNaN(salaryNumber) || Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
+        if (Number.isNaN(positionNumber)) {
             return res.status(400).json({
-                message: "Salary, experience, and position must be valid numbers.",
+                message: "Position must be a valid number.",
+                success: false
+            });
+        }
+
+        if (!rangePattern.test(`${salary}`.trim()) || !rangePattern.test(`${experience}`.trim())) {
+            return res.status(400).json({
+                message: "Salary and experience must be in range format like 5-7 or 0-1.",
                 success: false
             });
         }
@@ -28,10 +34,10 @@ export const postJob = async (req, res) => {
             title,
             description,
             requirements: `${requirements}`.split(",").map((item) => item.trim()).filter(Boolean),
-            salary: salaryNumber,
+            salary: `${salary}`.trim(),
             location,
             jobType,
-            experienceLevel: experienceNumber,
+            experienceLevel: `${experience}`.trim(),
             position: positionNumber,
             company: companyId,
             created_by: userId
@@ -145,13 +151,19 @@ export const updateJob = async (req, res) => {
             });
         }
 
-        const salaryNumber = Number(salary);
-        const experienceNumber = Number(experience);
         const positionNumber = Number(position);
+        const rangePattern = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
 
-        if (Number.isNaN(salaryNumber) || Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
+        if (Number.isNaN(positionNumber)) {
             return res.status(400).json({
-                message: "Salary, experience, and position must be valid numbers.",
+                message: "Position must be a valid number.",
+                success: false
+            });
+        }
+
+        if (!rangePattern.test(`${salary}`.trim()) || !rangePattern.test(`${experience}`.trim())) {
+            return res.status(400).json({
+                message: "Salary and experience must be in range format like 5-7 or 0-1.",
                 success: false
             });
         }
@@ -174,10 +186,10 @@ export const updateJob = async (req, res) => {
         job.title = title;
         job.description = description;
         job.requirements = `${requirements}`.split(",").map((item) => item.trim()).filter(Boolean);
-        job.salary = salaryNumber;
+        job.salary = `${salary}`.trim();
         job.location = location;
         job.jobType = jobType;
-        job.experienceLevel = experienceNumber;
+        job.experienceLevel = `${experience}`.trim();
         job.position = positionNumber;
         job.company = companyId;
 
