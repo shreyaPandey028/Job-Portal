@@ -13,13 +13,12 @@ export const postJob = async (req, res) => {
             })
         }
 
-        const salaryNumber = Number(salary);
         const experienceNumber = Number(experience);
         const positionNumber = Number(position);
 
-        if (Number.isNaN(salaryNumber) || Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
+        if (Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
             return res.status(400).json({
-                message: "Salary, experience, and position must be valid numbers.",
+                message: "Experience and position must be valid numbers.",
                 success: false
             });
         }
@@ -28,7 +27,7 @@ export const postJob = async (req, res) => {
             title,
             description,
             requirements: `${requirements}`.split(",").map((item) => item.trim()).filter(Boolean),
-            salary: salaryNumber,
+            salary: salary.trim(),
             location,
             jobType,
             experienceLevel: experienceNumber,
@@ -128,5 +127,68 @@ export const getAdminJobs = async (req, res) => {
             message: "Error fetching admin jobs",
             success: false
         })
+    }
+}
+
+// update job by admin
+export const updateJob = async (req, res) => {
+    try {
+        const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
+        const jobId = req.params.id;
+        const userId = req.id;
+
+        // Check if job exists and belongs to the user
+        const job = await Job.findOne({ _id: jobId, created_by: userId });
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found or you don't have permission to edit it.",
+                success: false
+            });
+        }
+
+        if (!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
+            return res.status(400).json({
+                message: "All fields are required.",
+                success: false
+            });
+        }
+
+        const experienceNumber = Number(experience);
+        const positionNumber = Number(position);
+
+        if (Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
+            return res.status(400).json({
+                message: "Experience and position must be valid numbers.",
+                success: false
+            });
+        }
+
+        const updatedJob = await Job.findByIdAndUpdate(
+            jobId,
+            {
+                title,
+                description,
+                requirements: `${requirements}`.split(",").map((item) => item.trim()).filter(Boolean),
+                salary: salary.trim(),
+                location,
+                jobType,
+                experienceLevel: experienceNumber,
+                position: positionNumber,
+                company: companyId
+            },
+            { new: true }
+        ).populate({ path: "company" });
+
+        return res.status(200).json({
+            message: "Job updated successfully.",
+            job: updatedJob,
+            success: true
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Error updating job",
+            success: false
+        });
     }
 }
