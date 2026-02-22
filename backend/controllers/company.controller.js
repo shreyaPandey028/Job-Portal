@@ -4,21 +4,25 @@ import cloudinary from "../utils/cloudinary.js";
 
 export const registerCompany = async (req, res) => {
     try {
-        const { companyName } = req.body;
+        const rawCompanyName = req.body?.companyName ?? "";
+        const companyName = rawCompanyName.trim();
+
         if (!companyName) {
             return res.status(400).json({
                 message: "Company name is required.",
                 success: false
             });
         }
-        let company = await Company.findOne({ name: companyName });
-        if (company) {
+
+        const existingCompany = await Company.findOne({ name: companyName });
+        if (existingCompany) {
             return res.status(400).json({
-                message: "You can't register same company.",
+                message: "Company already exists with this name.",
                 success: false
-            })
-        };
-        company = await Company.create({
+            });
+        }
+
+        const company = await Company.create({
             name: companyName,
             userId: req.id
         });
@@ -27,13 +31,13 @@ export const registerCompany = async (req, res) => {
             message: "Company registered successfully.",
             company,
             success: true
-        })
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             message: "Error registering company",
             success: false
-        })
+        });
     }
 }
 export const getCompany = async (req, res) => {
