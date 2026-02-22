@@ -14,6 +14,7 @@ app.set("trust proxy", 1);
 
 // ============ PERMANENT CORS CONFIGURATION ============
 const VERCEL_FRONTEND = "https://job-portal-jzxzl0iwz-priyanshu-tiwaris-projects-e02b1965.vercel.app";
+const VERCEL_FRONTEND_OLD = "https://job-portal-eight-sage.vercel.app";
 
 const corsOptions = {
     origin: function (origin, callback) {
@@ -23,6 +24,7 @@ const corsOptions = {
             "http://localhost:5175",
             "http://localhost:5176",
             VERCEL_FRONTEND,
+            VERCEL_FRONTEND_OLD,
             process.env.FRONTEND_URL || VERCEL_FRONTEND
         ];
         
