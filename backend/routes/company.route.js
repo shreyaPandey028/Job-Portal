@@ -5,12 +5,10 @@ import { singleUpload } from "../middlewares/mutler.js";
 
 const router = express.Router();
 
-// Public routes - anyone can view companies
-router.route("/get").get(getCompany);
-router.route("/get/:id").get(getCompanyById);
-
 // Protected routes - only authenticated users
 router.route("/register").post(isAuthenticated,registerCompany);
+router.route("/get").get(isAuthenticated,getCompany);
+router.route("/get/:id").get(isAuthenticated,getCompanyById);
 router.route("/update/:id").put(isAuthenticated,singleUpload, updateCompany);
 
 export default router;

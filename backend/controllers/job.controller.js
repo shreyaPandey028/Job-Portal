@@ -11,16 +11,28 @@ export const postJob = async (req, res) => {
                 message: "Somethin is missing.",
                 success: false
             })
-        };
+        }
+
+        const salaryNumber = Number(salary);
+        const experienceNumber = Number(experience);
+        const positionNumber = Number(position);
+
+        if (Number.isNaN(salaryNumber) || Number.isNaN(experienceNumber) || Number.isNaN(positionNumber)) {
+            return res.status(400).json({
+                message: "Salary, experience, and position must be valid numbers.",
+                success: false
+            });
+        }
+
         const job = await Job.create({
             title,
             description,
-            requirements: requirements.split(","),
-            salary: Number(salary),
+            requirements: `${requirements}`.split(",").map((item) => item.trim()).filter(Boolean),
+            salary: salaryNumber,
             location,
             jobType,
-            experienceLevel: experience,
-            position,
+            experienceLevel: experienceNumber,
+            position: positionNumber,
             company: companyId,
             created_by: userId
         });
@@ -94,16 +106,18 @@ export const getJobById = async (req, res) => {
 export const getAdminJobs = async (req, res) => {
     try {
         const adminId = req.id;
-        const jobs = await Job.find({ created_by: adminId }).populate({
-            path:'company',
-            createdAt:-1
-        });
+        const jobs = await Job.find({ created_by: adminId })
+            .populate({
+                path: "company"
+            })
+            .sort({ createdAt: -1 });
+
         if (!jobs) {
             return res.status(404).json({
                 message: "Jobs not found.",
                 success: false
             })
-        };
+        }
         return res.status(200).json({
             jobs,
             success: true
