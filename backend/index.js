@@ -25,14 +25,18 @@ const allowedOrigins = [
     "http://localhost:5174",
     "http://localhost:5175",
     "http://localhost:5176",
+    "https://job-portal-eight-sage.vercel.app",
     process.env.FRONTEND_URL
 ].filter(Boolean);
+
+console.log("Allowed Origins:", allowedOrigins);
 
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
+        console.log("CORS Blocked Origin:", origin);
         return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
