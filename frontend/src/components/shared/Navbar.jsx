@@ -10,6 +10,7 @@ import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import JobPortalLogo from './JobPortalLogo'
 
 const Navbar = () => {
     const { user } = useSelector(store => store.auth);
@@ -49,9 +50,10 @@ const Navbar = () => {
     return (
         <div className='bg-gradient-to-r from-slate-900 to-slate-800 border-b border-teal-500/30'>
             <div className='flex items-center justify-between mx-auto max-w-7xl h-16 px-4'>
-                <div>
-                    <h1 className='text-2xl font-bold text-white'>Job<span className='text-teal-400'>Portal</span></h1>
-                </div>
+                <Link to="/" className='flex items-center gap-2 hover:opacity-80 transition-opacity'>
+                    <JobPortalLogo size={36} />
+                    <h1 className='text-2xl font-bold text-white hidden sm:block'>Job<span className='text-teal-400'>Portal</span></h1>
+                </Link>
 
                 {/* Desktop Menu */}
                 <div className='hidden md:flex items-center gap-12'>
