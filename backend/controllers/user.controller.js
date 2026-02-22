@@ -122,12 +122,12 @@ export const login = async (req, res) => {
             profile: user.profile
         }
 
-        const isProduction = process.env.NODE_ENV === "production";
+        // PERMANENT FIX: Set cookies for cross-domain requests
         const cookieOptions = {
-            maxAge: 1 * 24 * 60 * 60 * 1000,
+            maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? "none" : "lax"
+            secure: true, // Always secure for HTTPS
+            sameSite: "none" // Allow cross-site cookies from Vercel to Render
         };
 
         return res.status(200).cookie("token", token, cookieOptions).json({
@@ -225,14 +225,13 @@ export const getResumeById = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
-
     try {
-        const isProduction = process.env.NODE_ENV === "production";
+        // PERMANENT FIX: Use correct cookie options for cross-domain requests
         return res.status(200).cookie("token", "", {
             maxAge: 0,
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? "none" : "lax"
+            secure: true, // Always secure for HTTPS
+            sameSite: "none" // Allow cross-site cookies
         }).json({
             message: "Logged out successfully.",
             success: true
