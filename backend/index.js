@@ -13,7 +13,7 @@ const app = express();
 app.set("trust proxy", 1);
 
 // ============ PERMANENT CORS CONFIGURATION ============
-const VERCEL_FRONTEND = "https://job-portal-eight-sage.vercel.app";
+const VERCEL_FRONTEND = "https://job-portal-jzxzl0iwz-priyanshu-tiwaris-projects-e02b1965.vercel.app";
 
 const corsOptions = {
     origin: function (origin, callback) {
